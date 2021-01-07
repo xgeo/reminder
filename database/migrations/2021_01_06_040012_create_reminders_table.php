@@ -16,9 +16,20 @@ class CreateRemindersTable extends Migration
         Schema::create('reminders', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('description')->nullable();
+            $table->text('description');
             $table->tinyInteger('status');
             $table->unsignedBigInteger('user_id')->index();
+            $table->timestamp('starts_at');
+            $table->timestamp('ends_at')->nullable();
+            $table->enum('type', [
+                'ONCE',
+                'EVERY',
+                'WEEKLY',
+                'MONTHLY',
+                'YEARLY',
+                'CUSTOMIZED',
+                'DEFAULT'
+            ])->default('DEFAULT');
             $table->timestamps();
         });
     }

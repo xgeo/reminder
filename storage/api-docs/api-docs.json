@@ -1,0 +1,190 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Postgrain - Backend Api Test",
+        "version": "1.0"
+    },
+    "paths": {
+        "/v1/reminder/list": {
+            "get": {
+                "tags": [
+                    "ReminderController"
+                ],
+                "summary": "Lista os lembretes",
+                "description": "Retorna a lista paginada de lembretes",
+                "operationId": "listReminders",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReminderPaginated"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "LaravelPaginate": {
+                "title": "LaravelPaginate",
+                "description": "Laravel Paginator",
+                "properties": {
+                    "total": {
+                        "description": "Quantidade de itens",
+                        "type": "integer"
+                    },
+                    "per_page": {
+                        "description": "Itens por paágina",
+                        "type": "integer"
+                    },
+                    "current_page": {
+                        "description": "Página atual",
+                        "type": "integer"
+                    },
+                    "last_page": {
+                        "description": "Última página",
+                        "type": "integer"
+                    },
+                    "first_page_url": {
+                        "description": "Primeira página",
+                        "type": "string"
+                    },
+                    "last_page_url": {
+                        "description": "Última página",
+                        "type": "string"
+                    },
+                    "prev_page_url": {
+                        "description": "Próxima página",
+                        "type": "string",
+                        "nullable": "true"
+                    },
+                    "path": {
+                        "description": "Caminho",
+                        "type": "string"
+                    },
+                    "from": {
+                        "description": "De",
+                        "type": "integer"
+                    },
+                    "to": {
+                        "description": "Para",
+                        "type": "integer"
+                    },
+                    "data": {
+                        "description": "Dados paginados - normalmente um modelo eloquent",
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "LaravelPaginate"
+                }
+            },
+            "ReminderPaginated": {
+                "title": "ReminderPaginated",
+                "description": "Paginação - Reminders",
+                "xml": {
+                    "name": "ReminderPaginated"
+                },
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/LaravelPaginate"
+                    },
+                    {
+                        "required": [
+                            "data"
+                        ],
+                        "properties": {
+                            "data": {
+                                "description": "Class ReminderPaginated",
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Reminder"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "Reminder": {
+                "title": "Reminder",
+                "description": "Reminder",
+                "properties": {
+                    "id": {
+                        "description": "Identificador do lembrete",
+                        "type": "integer"
+                    },
+                    "title": {
+                        "description": "Título do lembrete",
+                        "type": "string"
+                    },
+                    "description": {
+                        "description": "Descrição do lembrete",
+                        "type": "string"
+                    },
+                    "status": {
+                        "description": "Status do lembrete: 1 - CREATED / 2 - NOTIFIED / 3 - SOLVED",
+                        "type": "integer"
+                    },
+                    "full_name": {
+                        "description": "Nome do usuário atrelado ao lembrete",
+                        "type": "string"
+                    },
+                    "starts_at": {
+                        "description": "Data escolhida ou início do período selecionado",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "ends_at": {
+                        "description": "Fim do período selecionado",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "type": {
+                        "description": "Tipo do lembrete: DEFAULT / ONCE / EVERY / WEEKLY / MONTHLY / YEARLY / CUSTOMIZED",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Quando o lembrete foi criado",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "updated_at": {
+                        "description": "Quando o lembrete foi atualizado",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "deleted_at": {
+                        "description": "Quando o lembrete foi deletado logicamente",
+                        "type": "string",
+                        "format": "date"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Reminder"
+                }
+            }
+        }
+    },
+    "security": [
+        []
+    ]
+}
