@@ -14,6 +14,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
+
+$httpControllerNamespace = "App\Http\Controllers";
+
+Route::prefix('v1')->group(function () use ($httpControllerNamespace) {
+    Route::prefix('reminder')
+        ->namespace($httpControllerNamespace)
+        ->middleware('auth:api')
+        ->group(function () {
+            Route::post('', 'ReminderController@store');
+            Route::delete('{reminder}', 'ReminderController@destroy');
+            Route::patch('{reminder}/resolve', 'ReminderController@check');
+            Route::get('filter', 'ReminderController@filter');
+            Route::get('list', 'ReminderController@listReminders');
+        });
 });
+

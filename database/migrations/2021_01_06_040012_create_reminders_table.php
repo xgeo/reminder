@@ -17,7 +17,7 @@ class CreateRemindersTable extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->tinyInteger('status');
+            $table->tinyInteger('status')->default(1);
             $table->unsignedBigInteger('user_id')->index();
             $table->timestamp('starts_at');
             $table->timestamp('ends_at')->nullable();

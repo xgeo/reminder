@@ -1,18 +1,18 @@
 <?php
 
 return [
-    'default' => 'default',
+    'default' => 'v1',
     'documentations' => [
-        'default' => [
+        'v1' => [
             'api' => [
-                'title' => 'L5 Swagger UI',
+                'title' => 'Postgrain',
             ],
 
             'routes' => [
                 /*
                  * Route for accessing api documentation interface
                 */
-                'api' => 'api/documentation',
+                'api' => 'documentation',
             ],
             'paths' => [
                 /*
@@ -123,10 +123,10 @@ return [
                 ],
                 */
 
-                /* Open API 3.0 support
+                /* Open API 3.0 support */
                 'passport' => [ // Unique name of security
                     'type' => 'oauth2', // The type of the security scheme. Valid values are "basic", "apiKey" or "oauth2".
-                    'description' => 'Laravel passport oauth2 security.',
+                    'description' => 'Postgrain - Autenticação',
                     'in' => 'header',
                     'scheme' => 'https',
                     'flows' => [
@@ -138,7 +138,6 @@ return [
                         ],
                     ],
                 ],
-                */
             ],
             'security' => [
                 /*
@@ -196,8 +195,8 @@ return [
         /*
          * Uncomment to add constants which can be used in annotations
          */
-        // 'constants' => [
-        // 'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'http://my-default-host.com'),
-        // ],
+         'constants' => [
+            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST'),
+         ],
     ],
 ];

@@ -14,24 +14,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2f760d31-8325-463c-95f4-aa37d94dd152" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app/Http/Schemas/LaravelPaginate.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Schemas/ReminderPaginated.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/.env.example" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/postgrain.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/postgrain.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Controller.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Controller.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ReminderController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ReminderController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Requests/CreateReminderRequest.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Requests/CreateReminderRequest.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/app.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Providers/AuthServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Providers/AuthServiceProvider.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Providers/RouteServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Providers/RouteServiceProvider.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/l5-swagger.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/l5-swagger.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database/migrations/2014_10_12_000000_create_users_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2014_10_12_000000_create_users_table.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database/migrations/2021_01_06_040012_create_reminders_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2021_01_06_040012_create_reminders_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2021_01_06_041629_create_periods_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2021_01_06_041710_alter_periods_table_add_reminder_fk.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Feature/ExampleTest.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Unit/ExampleTest.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/seeders/DatabaseSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeders/DatabaseSeeder.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/api-docs/api-docs.json" beforeDir="false" afterPath="$PROJECT_DIR$/storage/api-docs/api-docs.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -200,7 +195,7 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="reference.webide.settings.project.settings.php" />
+    <property name="settings.editor.selected.configurable" value="web-ide.project.structure" />
   </component>
   <component name="RunManager">
     <configuration name="phpunit.xml" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
@@ -217,7 +212,7 @@
       <option name="presentableId" value="Default" />
       <updated>1609905085317</updated>
       <workItem from="1609905086433" duration="4581000" />
-      <workItem from="1609975291854" duration="5952000" />
+      <workItem from="1609975291854" duration="10523000" />
     </task>
     <servers />
   </component>
@@ -244,17 +239,17 @@
       <screen x="1440" y="23" width="2560" height="1057" />
     </state>
     <state x="2460" y="284" key="NewPhpClassDialog/0.23.1440.877/1440.23.2560.1057@1440.23.2560.1057" timestamp="1609985891792" />
-    <state x="2229" y="190" key="SettingsEditor" timestamp="1609907285267">
+    <state x="2229" y="190" key="SettingsEditor" timestamp="1609994150706">
       <screen x="1440" y="23" width="2560" height="1057" />
     </state>
-    <state x="2229" y="190" key="SettingsEditor/0.23.1440.877/1440.23.2560.1057@1440.23.2560.1057" timestamp="1609907285267" />
-    <state x="2427" y="306" width="586" height="490" key="find.popup" timestamp="1609986128633">
+    <state x="2229" y="190" key="SettingsEditor/0.23.1440.877/1440.23.2560.1057@1440.23.2560.1057" timestamp="1609994150706" />
+    <state x="2427" y="306" width="586" height="490" key="find.popup" timestamp="1609995087351">
       <screen x="1440" y="23" width="2560" height="1057" />
     </state>
-    <state x="2427" y="306" width="586" height="490" key="find.popup/0.23.1440.877/1440.23.2560.1057@1440.23.2560.1057" timestamp="1609986128633" />
-    <state x="2385" y="202" width="670" height="676" key="search.everywhere.popup" timestamp="1609986713500">
+    <state x="2427" y="306" width="586" height="490" key="find.popup/0.23.1440.877/1440.23.2560.1057@1440.23.2560.1057" timestamp="1609995087351" />
+    <state x="2385" y="202" width="670" height="676" key="search.everywhere.popup" timestamp="1609996033092">
       <screen x="1440" y="23" width="2560" height="1057" />
     </state>
-    <state x="2385" y="202" width="670" height="676" key="search.everywhere.popup/0.23.1440.877/1440.23.2560.1057@1440.23.2560.1057" timestamp="1609986713500" />
+    <state x="2385" y="202" width="670" height="676" key="search.everywhere.popup/0.23.1440.877/1440.23.2560.1057@1440.23.2560.1057" timestamp="1609996033092" />
   </component>
 </project>

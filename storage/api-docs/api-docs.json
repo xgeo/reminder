@@ -5,6 +5,131 @@
         "version": "1.0"
     },
     "paths": {
+        "/v1/reminder": {
+            "post": {
+                "tags": [
+                    "ReminderController"
+                ],
+                "summary": "Cria um lembrete",
+                "description": "Cria um lembrete e retorna o lembrete criado.",
+                "operationId": "store",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "description",
+                                    "starts_at",
+                                    "type"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "starts_at": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "ends_at": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "type": {
+                                        "description": "DEFAULT / ONCE / EVERY / WEEKLY / MONTHLY / YEARLY / CUSTOMIZED",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Reminder"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/v1/reminder/{reminder}/resolve": {
+            "patch": {
+                "tags": [
+                    "ReminderController"
+                ],
+                "summary": "Resolve um lembrete",
+                "description": "Resolve um lembrete e retorna se foi possível resolver",
+                "operationId": "resolve",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Reminder"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/v1/reminder/filter": {
+            "get": {
+                "tags": [
+                    "ReminderController"
+                ],
+                "summary": "Filtra os lembretes",
+                "description": "Retorna a lista paginada e filtrada de lembretes de acordo com os parâmetros",
+                "operationId": "filter",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReminderPaginated"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
         "/v1/reminder/list": {
             "get": {
                 "tags": [
@@ -20,6 +145,36 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ReminderPaginated"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/v1/reminder/{reminder}": {
+            "delete": {
+                "tags": [
+                    "ReminderController"
+                ],
+                "summary": "Remove um lembrete",
+                "description": "Remove um lembrete e retorna o sucesso da remoção",
+                "operationId": "destroy",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Reminder"
                                 }
                             }
                         }
@@ -180,6 +335,22 @@
                 "type": "object",
                 "xml": {
                     "name": "Reminder"
+                }
+            }
+        },
+        "securitySchemes": {
+            "passport": {
+                "type": "oauth2",
+                "description": "Postgrain - Autenticação",
+                "in": "header",
+                "scheme": "https",
+                "flows": {
+                    "password": {
+                        "authorizationUrl": "http://api.postgrain.test/oauth/authorize",
+                        "tokenUrl": "http://api.postgrain.test/oauth/token",
+                        "refreshUrl": "http://api.postgrain.test/token/refresh",
+                        "scopes": []
+                    }
                 }
             }
         }
