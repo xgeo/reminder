@@ -6,7 +6,7 @@ use App\Http\Enums\ReminderTypeEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class CreateReminderRequest extends FormRequest
+class FilterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,13 +29,10 @@ class CreateReminderRequest extends FormRequest
         $possibleActions = $enum->getEnumList();
 
         return [
-            'title'         => 'required',
-            'description'   => 'required',
+            'starts_at' => 'date_format:Y-m-d',
             'type'          => [
-                'required',
                 Rule::in($possibleActions),
             ],
-            'date' => 'required|date_format:Y-m-d'
         ];
     }
 }

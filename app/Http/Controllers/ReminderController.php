@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Enums\ReminderTypeEnum;
 use App\Http\Requests\CreateReminderRequest;
+use App\Http\Requests\FilterRequest;
 use App\Models\Reminder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
+
 
 class ReminderController extends Controller
 {
@@ -20,7 +26,7 @@ class ReminderController extends Controller
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema(
-     *                 required={"title", "description", "starts_at", "type"},
+     *                 required={"title", "description", "date", "type"},
      *                 @OA\Property(
      *                     property="title",
      *                     type="string"
@@ -30,12 +36,7 @@ class ReminderController extends Controller
      *                     type="string"
      *                 ),
      *                 @OA\Property(
-     *                     property="starts_at",
-     *                     type="string",
-     *                     format="date-time"
-     *                 ),
-     *                  @OA\Property(
-     *                     property="ends_at",
+     *                     property="date",
      *                     type="string",
      *                     format="date-time"
      *                 ),
@@ -60,9 +61,9 @@ class ReminderController extends Controller
      * @param CreateReminderRequest $createReminderRequest
      * @return \Illuminate\Database\Eloquent\Model
      */
-    protected function store(CreateReminderRequest $createReminderRequest)
+    public function store(CreateReminderRequest $createReminderRequest)
     {
-        return \Auth::user()->reminders()->create($createReminderRequest->all());
+        return Auth::user()->reminders()->create($createReminderRequest->all());
     }
 
     /**
@@ -83,10 +84,15 @@ class ReminderController extends Controller
      *    description="Unauthenticated",
      *   )
      * )
+     * @param Reminder $reminder
+     * @return \Illuminate\Http\JsonResponse
      */
-    protected function resolve()
+    public function resolve(Reminder $reminder)
     {
-
+        return new JsonResponse([
+            'success'   => $reminder->resolve(),
+            'reminder'  => $reminder->id
+        ]);
     }
 
     /**
@@ -107,10 +113,15 @@ class ReminderController extends Controller
      *    description="Unauthenticated",
      *   )
      * )
+     * @param FilterRequest $filterRequest
+     * @param Reminder $reminder
+     * @return Reminder[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
-    protected function filter()
+    public function filter(FilterRequest $filterRequest, Reminder $reminder)
     {
+        $parameters = $filterRequest->only('type', 'status', 'starts_at', 'ends_at');
 
+        return $reminder->filter($parameters);
     }
 
     /**
@@ -132,7 +143,7 @@ class ReminderController extends Controller
      *   )
      * )
      */
-    protected function listReminders()
+    public function listReminders()
     {
 
     }
@@ -156,7 +167,7 @@ class ReminderController extends Controller
      *   )
      * )
      */
-    protected function destroy()
+    public function destroy()
     {
 
     }

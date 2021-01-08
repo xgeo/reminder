@@ -19,8 +19,7 @@ class CreateRemindersTable extends Migration
             $table->text('description');
             $table->tinyInteger('status')->default(1);
             $table->unsignedBigInteger('user_id')->index();
-            $table->timestamp('starts_at');
-            $table->timestamp('ends_at')->nullable();
+            $table->date('date');
             $table->enum('type', [
                 'ONCE',
                 'EVERY',

@@ -34,10 +34,6 @@
                                         "type": "string",
                                         "format": "date-time"
                                     },
-                                    "ends_at": {
-                                        "type": "string",
-                                        "format": "date-time"
-                                    },
                                     "type": {
                                         "description": "DEFAULT / ONCE / EVERY / WEEKLY / MONTHLY / YEARLY / CUSTOMIZED",
                                         "type": "string"
@@ -304,11 +300,6 @@
                     },
                     "starts_at": {
                         "description": "Data escolhida ou início do período selecionado",
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "ends_at": {
-                        "description": "Fim do período selecionado",
                         "type": "string",
                         "format": "date"
                     },

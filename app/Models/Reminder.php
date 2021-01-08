@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Enums\ReminderStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -42,16 +43,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *      description="Nome do usuário atrelado ao lembrete"
  *      ),
  *     @OA\Property(
- *      property="starts_at",
+ *      property="date",
  *      type="string",
  *      format="date",
  *      description="Data escolhida ou início do período selecionado"
- *      ),
- *     @OA\Property(
- *      property="ends_at",
- *      type="string",
- *      format="date",
- *      description="Fim do período selecionado"
  *      ),
  *     @OA\Property(
  *      property="type",
@@ -83,7 +78,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property bool $status
  * @property int $user_id
  * @property string $starts_at
- * @property string|null $ends_at
  * @property string $type
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -104,6 +98,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|Reminder withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Reminder withoutTrashed()
  * @mixin \Eloquent
+ * @property-read \App\Models\User $user
  */
 class Reminder extends Model
 {
@@ -114,13 +109,55 @@ class Reminder extends Model
         'description',
         'status',
         'user_id',
-        'starts_at',
-        'ends_at',
+        'date',
         'type'
+    ];
+
+    protected $appends = [
+        'full_name'
+    ];
+
+    public $visible = [
+        'id',
+        'title',
+        'description',
+        'status',
+        'full_name',
+        'date',
+        'type',
+        'created_at'
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function resolve(): bool
+    {
+        $this->status = ReminderStatusEnum::SOLVED;
+        return $this->save();
+    }
+
+    public function getFullNameAttribute()
+    {
+        return $this->user->full_name;
+    }
+
+    public function filter(array $parameters)
+    {
+        $starts_at  = $parameters['starts_at'];
+        $ends_at    = $parameters['ends_at'];
+        $status     = $parameters['status'] ?? ReminderStatusEnum::CREATED;
+
+        /** Listar lembretes pendentes ou resolvidos de um período */
+        $sql = $this->where('date', '>=', $starts_at)
+            ->where('status', '=', $status);
+
+        if ($ends_at) {
+            $sql->where('date', '<=', $ends_at);
+        }
+
+        return $sql->get();
     }
 }
