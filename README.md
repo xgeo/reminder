@@ -11,9 +11,7 @@
 
 - `docker-compose up --build`
 - `docker-compose run --rm composer install`
-- `docker-compose run --rm sh cp .env.example .env`
 - `docker-compose run --rm artisan key:generate`
-- `docker-compose run --rm sh chmod -R 0777 storage bootstrap`
 - `docker-compose run --rm artisan migrate`
 - `docker-compose run --rm artisan passport:install`
 - `docker-compose run --rm artisan db:seed`
