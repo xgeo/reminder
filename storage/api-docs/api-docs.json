@@ -20,7 +20,7 @@
                                 "required": [
                                     "title",
                                     "description",
-                                    "starts_at",
+                                    "date",
                                     "type"
                                 ],
                                 "properties": {
@@ -30,9 +30,9 @@
                                     "description": {
                                         "type": "string"
                                     },
-                                    "starts_at": {
+                                    "date": {
                                         "type": "string",
-                                        "format": "date-time"
+                                        "format": "date"
                                     },
                                     "type": {
                                         "description": "DEFAULT / ONCE / EVERY / WEEKLY / MONTHLY / YEARLY / CUSTOMIZED",
@@ -74,13 +74,36 @@
                 "summary": "Resolve um lembrete",
                 "description": "Resolve um lembrete e retorna se foi possível resolver",
                 "operationId": "resolve",
+                "parameters": [
+                    {
+                        "name": "reminder",
+                        "in": "path",
+                        "description": "ID do lembrete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Reminder"
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "reminder": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "success": true,
+                                        "reminder": 1
+                                    }
                                 }
                             }
                         }
@@ -104,6 +127,55 @@
                 "summary": "Filtra os lembretes",
                 "description": "Retorna a lista paginada e filtrada de lembretes de acordo com os parâmetros",
                 "operationId": "filter",
+                "parameters": [
+                    {
+                        "name": "paginate",
+                        "in": "query",
+                        "description": "Quantidade da paginação",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "starts_at",
+                        "in": "query",
+                        "description": "Período Incial",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "ends_at",
+                        "in": "query",
+                        "description": "Período Final",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "is_solved",
+                        "in": "query",
+                        "description": "Informa se um o lembrete foi resolvido",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -134,6 +206,26 @@
                 "summary": "Lista os lembretes",
                 "description": "Retorna a lista paginada de lembretes",
                 "operationId": "listReminders",
+                "parameters": [
+                    {
+                        "name": "paginate",
+                        "in": "query",
+                        "description": "Quantidade da paginação",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -164,13 +256,36 @@
                 "summary": "Remove um lembrete",
                 "description": "Remove um lembrete e retorna o sucesso da remoção",
                 "operationId": "destroy",
+                "parameters": [
+                    {
+                        "name": "reminder",
+                        "in": "path",
+                        "description": "ID do lembrete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Reminder"
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "reminder": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "success": true,
+                                        "reminder": 1
+                                    }
                                 }
                             }
                         }
@@ -291,14 +406,14 @@
                         "type": "string"
                     },
                     "status": {
-                        "description": "Status do lembrete: 1 - CREATED / 2 - NOTIFIED / 3 - SOLVED",
+                        "description": "Status do lembrete: 1 - CREATED / 2 - SOLVED",
                         "type": "integer"
                     },
                     "full_name": {
                         "description": "Nome do usuário atrelado ao lembrete",
                         "type": "string"
                     },
-                    "starts_at": {
+                    "date": {
                         "description": "Data escolhida ou início do período selecionado",
                         "type": "string",
                         "format": "date"
@@ -309,16 +424,6 @@
                     },
                     "created_at": {
                         "description": "Quando o lembrete foi criado",
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "updated_at": {
-                        "description": "Quando o lembrete foi atualizado",
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "deleted_at": {
-                        "description": "Quando o lembrete foi deletado logicamente",
                         "type": "string",
                         "format": "date"
                     }

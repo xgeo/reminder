@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Http\Enums\ReminderStatusEnum;
+use App\Http\Enums\ReminderTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder;
 
 /**
  * Class Reminder
@@ -35,7 +37,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *     @OA\Property(
  *      property="status",
  *      type="integer",
- *      description="Status do lembrete: 1 - CREATED / 2 - NOTIFIED / 3 - SOLVED"
+ *      description="Status do lembrete: 1 - CREATED / 2 - SOLVED"
  *      ),
  *     @OA\Property(
  *      property="full_name",
@@ -58,19 +60,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *      type="string",
  *      format="date",
  *      description="Quando o lembrete foi criado"
- *      ),
- *     @OA\Property(
- *      property="updated_at",
- *      type="string",
- *      format="date",
- *      description="Quando o lembrete foi atualizado"
- *      ),
- *     @OA\Property(
- *      property="deleted_at",
- *      type="string",
- *      format="date",
- *      description="Quando o lembrete foi deletado logicamente"
- *      ),
+ *      )
  * )
  * @property int $id
  * @property string $title
@@ -99,6 +89,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|Reminder withoutTrashed()
  * @mixin \Eloquent
  * @property-read \App\Models\User $user
+ * @property string $date
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read mixed $full_name
+ * @method static \Illuminate\Database\Eloquent\Builder|Reminder whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Reminder whereDeletedAt($value)
  */
 class Reminder extends Model
 {
@@ -125,7 +120,8 @@ class Reminder extends Model
         'full_name',
         'date',
         'type',
-        'created_at'
+        'created_at',
+        'deleted_at'
     ];
 
     public function user()
@@ -146,18 +142,49 @@ class Reminder extends Model
 
     public function filter(array $parameters)
     {
-        $starts_at  = $parameters['starts_at'];
-        $ends_at    = $parameters['ends_at'];
-        $status     = $parameters['status'] ?? ReminderStatusEnum::CREATED;
+        $starts_at  = $parameters['starts_at'] ?? NULL;
+        $ends_at    = $parameters['ends_at'] ?? NULL;
+        $is_solved  = $parameters['is_solved'] === 'true';
+        $status     = $is_solved ? ReminderStatusEnum::SOLVED : ReminderStatusEnum::CREATED;
+        $type       = $parameters['type'] ?? NULL;
+        $paginate   = $parameters['paginate'] ?? 10;
 
-        /** Listar lembretes pendentes ou resolvidos de um período */
-        $sql = $this->where('date', '>=', $starts_at)
-            ->where('status', '=', $status);
+        $sql = $this->withTrashed()->orWhere(function ($builder) {
+            return $builder->whereNull('deleted_at');
+        })->orWhere(function ($builder) {
+            return $builder->whereNotNull('deleted_at')
+                ->where('date', '<', \DB::raw('DATE(deleted_at)'));
+        })->where('status', '=', $status);
 
-        if ($ends_at) {
+        if (!is_null($type)) {
+            $sql->where('type', '=', $type);
+        }
+
+        if (!is_null($starts_at)) {
+            $sql->where('date', '>=', $starts_at);
+        }
+
+        if (!is_null($ends_at)) {
             $sql->where('date', '<=', $ends_at);
         }
 
-        return $sql->get();
+        return $sql->paginate($paginate);
+    }
+
+    public function scopeDaily($query, $now)
+    {
+        return $query->where('status', '=', ReminderStatusEnum::CREATED)
+            ->where('date', '=', $now)
+            ->where('type', '=', ReminderTypeEnum::DEFAULT);
+    }
+
+    /**
+     * @param Builder $query
+     */
+    public function scopeMonthly($query, $now)
+    {
+        return $query->where(\DB::raw("DATE_FORMAT(date,'%d')"), '=',
+            \DB::raw("DATE_FORMAT('{$now}', '%d')"))
+        ->where('type', '=', ReminderTypeEnum::MONTHLY);
     }
 }

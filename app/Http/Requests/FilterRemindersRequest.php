@@ -6,7 +6,7 @@ use App\Http\Enums\ReminderTypeEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class FilterRequest extends FormRequest
+class FilterRemindersRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,6 +30,7 @@ class FilterRequest extends FormRequest
 
         return [
             'starts_at' => 'date_format:Y-m-d',
+            'is_solved' => 'required',
             'type'          => [
                 Rule::in($possibleActions),
             ],

@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Enums\ReminderTypeEnum;
+use App\Http\Enums\ReminderStatusEnum;
 use App\Http\Requests\CreateReminderRequest;
-use App\Http\Requests\FilterRequest;
+use App\Http\Requests\FilterRemindersRequest;
+use App\Http\Requests\ListRemindersRequest;
 use App\Models\Reminder;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 
 
 class ReminderController extends Controller
@@ -38,7 +37,7 @@ class ReminderController extends Controller
      *                 @OA\Property(
      *                     property="date",
      *                     type="string",
-     *                     format="date-time"
+     *                     format="date"
      *                 ),
      *                  @OA\Property(
      *                     property="type",
@@ -74,10 +73,32 @@ class ReminderController extends Controller
      * operationId="resolve",
      * tags={"ReminderController"},
      * security={ {"passport": {} }},
+     * @OA\Parameter(
+     *         name="reminder",
+     *         description="ID do lembrete",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
      * @OA\Response(
      *    response=200,
      *    description="Success",
-     *    @OA\JsonContent(ref="#/components/schemas/Reminder")
+     *    @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="success",
+     *                     type="boolean"
+     *                 ),
+     *                  @OA\Property(
+     *                     property="reminder",
+     *                     type="integer"
+     *                 ),
+     *                 example={ "success": true, "reminder": 1 }
+     *             )
+     *         )
      *     ),
      * @OA\Response(
      *    response=401,
@@ -103,6 +124,53 @@ class ReminderController extends Controller
      * operationId="filter",
      * tags={"ReminderController"},
      * security={ {"passport": {} }},
+     * @OA\Parameter(
+     *         name="paginate",
+     *         description="Quantidade da paginação",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         description="Página",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     * @OA\Parameter(
+     *         name="starts_at",
+     *         description="Período Incial",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             format="date"
+     *         )
+     *     ),
+     * @OA\Parameter(
+     *         name="ends_at",
+     *         description="Período Final",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             format="date"
+     *         )
+     *     ),
+     * @OA\Parameter(
+     *         name="is_solved",
+     *         description="Informa se um o lembrete foi resolvido",
+     *         in="query",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="boolean"
+     *         )
+     *     ),
      * @OA\Response(
      *    response=200,
      *    description="Success",
@@ -113,13 +181,13 @@ class ReminderController extends Controller
      *    description="Unauthenticated",
      *   )
      * )
-     * @param FilterRequest $filterRequest
+     * @param FilterRemindersRequest $filterRequest
      * @param Reminder $reminder
-     * @return Reminder[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function filter(FilterRequest $filterRequest, Reminder $reminder)
+    public function filter(FilterRemindersRequest $filterRequest, Reminder $reminder)
     {
-        $parameters = $filterRequest->only('type', 'status', 'starts_at', 'ends_at');
+        $parameters = $filterRequest->only('type', 'is_solved', 'starts_at', 'ends_at', 'paginate');
 
         return $reminder->filter($parameters);
     }
@@ -132,6 +200,24 @@ class ReminderController extends Controller
      * operationId="listReminders",
      * tags={"ReminderController"},
      * security={ {"passport": {} }},
+     * @OA\Parameter(
+     *         name="paginate",
+     *         description="Quantidade da paginação",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         description="Página",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
      * @OA\Response(
      *    response=200,
      *    description="Success",
@@ -142,10 +228,13 @@ class ReminderController extends Controller
      *    description="Unauthenticated",
      *   )
      * )
+     * @param ListRemindersRequest $listRemindersRequest
+     * @param Reminder $reminder
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function listReminders()
+    public function listReminders(ListRemindersRequest $listRemindersRequest, Reminder $reminder)
     {
-
+        return $reminder->paginate($listRemindersRequest->get('paginate', 10));
     }
 
     /**
@@ -156,19 +245,59 @@ class ReminderController extends Controller
      * operationId="destroy",
      * tags={"ReminderController"},
      * security={ {"passport": {} }},
+     * @OA\Parameter(
+     *         name="reminder",
+     *         description="ID do lembrete",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
      * @OA\Response(
      *    response=200,
      *    description="Success",
-     *    @OA\JsonContent(ref="#/components/schemas/Reminder")
+     *    @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="success",
+     *                     type="boolean"
+     *                 ),
+     *                  @OA\Property(
+     *                     property="reminder",
+     *                     type="integer"
+     *                 ),
+     *                 example={ "success": true, "reminder": 1 }
+     *             )
+     *         )
      *     ),
      * @OA\Response(
      *    response=401,
      *    description="Unauthenticated",
      *   )
      * )
+     * @param int $id
+     * @param Reminder $reminder
+     * @return JsonResponse
      */
-    public function destroy()
+    public function destroy(int $id, Reminder $reminder)
     {
+        try {
+            $reminder = $reminder->findOrFail($id);
 
+            $response = [
+                'success'   => $reminder->delete(),
+                'reminder'  => $id
+            ];
+
+        } catch (\Exception $e) {
+            $response = [
+                'success'   => false,
+                'reminder'  => $id
+            ];
+        }
+
+        return new JsonResponse($response);
     }
 }

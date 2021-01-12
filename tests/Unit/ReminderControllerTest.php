@@ -5,7 +5,7 @@ namespace Tests\Unit;
 use App\Http\Controllers\ReminderController;
 use App\Http\Enums\ReminderTypeEnum;
 use App\Http\Requests\CreateReminderRequest;
-use App\Http\Requests\FilterRequest;
+use App\Http\Requests\FilterRemindersRequest;
 use App\Models\Reminder;
 use App\Models\User;
 use PHPUnit\Framework\TestCase;
@@ -65,7 +65,7 @@ class ReminderControllerTest extends TestCase
     public function test_filter()
     {
         $reminder = \Mockery::spy(Reminder::class);
-        $request = \Mockery::spy(FilterRequest::class);
+        $request = \Mockery::spy(FilterRemindersRequest::class);
         $request->shouldReceive('only')->once()->andReturn([]);
 
         $controller = new ReminderController();

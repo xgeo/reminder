@@ -30,6 +30,7 @@ class CreateRemindersTable extends Migration
                 'DEFAULT'
             ])->default('DEFAULT');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
