@@ -140,6 +140,11 @@ class Reminder extends Model
         return $this->user->full_name;
     }
 
+    /**
+     * Dividir responsabilidade
+     * @param array $parameters
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
     public function filter(array $parameters)
     {
         $starts_at  = $parameters['starts_at'] ?? NULL;
