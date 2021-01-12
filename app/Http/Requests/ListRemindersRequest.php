@@ -24,7 +24,8 @@ class ListRemindersRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'paginate'  => 'numeric',
+            'page'      => 'numeric'
         ];
     }
 }

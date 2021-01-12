@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
+    "name": "postgrain/reminder",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "BackEnd Test API",
     "keywords": [
         "framework",
         "laravel"

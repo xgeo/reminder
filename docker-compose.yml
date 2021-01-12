@@ -40,7 +40,7 @@ services:
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: "@321@321"
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     volumes:
@@ -62,7 +62,7 @@ services:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
     environment:
-      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: "@321@321"
       PMA_HOST: mysql
       PMA_PORT: 3306
       PMA_ARBITRARY: 1

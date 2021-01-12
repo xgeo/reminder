@@ -2,11 +2,9 @@
 
 namespace App\Events;
 
-use App\Http\Enums\ReminderStatusEnum;
 use App\Models\Reminder;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -16,10 +14,10 @@ class ReminderEvent
 
     public Reminder $reminder;
 
+
     /**
-     * Create a new event instance.
-     *
-     * @return void
+     * ReminderEvent constructor.
+     * @param Reminder $reminder
      */
     public function __construct(Reminder $reminder)
     {

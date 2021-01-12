@@ -1,17 +1,25 @@
-## Postgrain - BackEnd Api Test
-
-- Laravel 8.x
-- Swagger - OA\Api 3.0
-
+## Reminder - API
 #### Requirements
 
 - PHP 7.4.x
-- MySQL
-- Redis
+- Laravel 8.x
+- MySQL 5.x
+- Redis 5.x
+- Swagger - OA\Api 3.0
 
-#### Installing
+#### Installing - With Docker
 
-- `git clone repo`
+- `docker-compose up --build`
+- `docker-compose run --rm composer install`
+- `docker-compose run --rm sh cp .env.example .env`
+- `docker-compose run --rm artisan key:generate`
+- `docker-compose run --rm sh chmod -R 0777 storage bootstrap`
+- `docker-compose run --rm artisan migrate`
+- `docker-compose run --rm artisan passport:install`
+- `docker-compose run --rm artisan db:seed`
+
+#### Installing - Without docker
+
 - `composer install`
 - `cp .env.example .env`
 - `php artisan key:generate`
@@ -20,10 +28,11 @@
 - `php artisan passport:install`
 - `php artisan db:seed`
 
-#### Running
+#### Running - Without Docker
 
 - Queue: `php artisan queue:listen redis --queue reminders`
 - Console Command: `php artisan check:reminders`
+- Server: `php artisan serve`
 
 #### Cron
 
@@ -32,6 +41,3 @@
 #### Scheduler locally
 
 - `php artisan schedule:work`
-
-#### Docker
-- `docker-compose up --build`

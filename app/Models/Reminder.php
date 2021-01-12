@@ -154,12 +154,15 @@ class Reminder extends Model
         $type       = $parameters['type'] ?? NULL;
         $paginate   = $parameters['paginate'] ?? 10;
 
-        $sql = $this->withTrashed()->orWhere(function ($builder) {
-            return $builder->whereNull('deleted_at');
-        })->orWhere(function ($builder) {
-            return $builder->whereNotNull('deleted_at')
-                ->where('date', '<', \DB::raw('DATE(deleted_at)'));
-        })->where('status', '=', $status);
+        $sql = $this->withTrashed()
+            ->where('status', '=', $status)
+            ->where(function ($builder) {
+                return $builder->whereNull('deleted_at')
+                                ->orWhere(function ($builder) {
+                                    return $builder->whereNotNull('deleted_at')
+                                        ->where('date', '<', \DB::raw('DATE(deleted_at)'));
+                                });
+            });
 
         if (!is_null($type)) {
             $sql->where('type', '=', $type);

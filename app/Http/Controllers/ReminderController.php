@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Enums\ReminderStatusEnum;
 use App\Http\Requests\CreateReminderRequest;
 use App\Http\Requests\FilterRemindersRequest;
 use App\Http\Requests\ListRemindersRequest;
