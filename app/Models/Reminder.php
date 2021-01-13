@@ -124,6 +124,8 @@ class Reminder extends Model
         'deleted_at'
     ];
 
+    private const DEFAULT_VALUE_PAGINATE = 10;
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -140,11 +142,6 @@ class Reminder extends Model
         return $this->user->full_name;
     }
 
-    /**
-     * Dividir responsabilidade
-     * @param array $parameters
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     */
     public function filter(array $parameters)
     {
         $starts_at  = $parameters['starts_at'] ?? NULL;
@@ -152,29 +149,13 @@ class Reminder extends Model
         $is_solved  = $parameters['is_solved'] === 'true';
         $status     = $is_solved ? ReminderStatusEnum::SOLVED : ReminderStatusEnum::CREATED;
         $type       = $parameters['type'] ?? NULL;
-        $paginate   = $parameters['paginate'] ?? 10;
+        $paginate   = $parameters['paginate'] ?? self::DEFAULT_VALUE_PAGINATE;
 
-        $sql = $this->withTrashed()
-            ->where('status', '=', $status)
-            ->where(function ($builder) {
-                return $builder->whereNull('deleted_at')
-                                ->orWhere(function ($builder) {
-                                    return $builder->whereNotNull('deleted_at')
-                                        ->where('date', '<', \DB::raw('DATE(deleted_at)'));
-                                });
-            });
+        $sql = $this->getReminderQuery($status);
 
-        if (!is_null($type)) {
-            $sql->where('type', '=', $type);
-        }
+        $this->setQueryType($sql, $type);
 
-        if (!is_null($starts_at)) {
-            $sql->where('date', '>=', $starts_at);
-        }
-
-        if (!is_null($ends_at)) {
-            $sql->where('date', '<=', $ends_at);
-        }
+        $this->setQueryDates($sql, $starts_at, $ends_at);
 
         return $sql->paginate($paginate);
     }
@@ -183,16 +164,48 @@ class Reminder extends Model
     {
         return $query->where('status', '=', ReminderStatusEnum::CREATED)
             ->where('date', '=', $now)
-            ->where('type', '=', ReminderTypeEnum::DEFAULT);
+            ->where('type', '=', ReminderTypeEnum::DEFAULT)
+            ->orWhere('type', '=', ReminderTypeEnum::ONCE);
     }
 
-    /**
-     * @param Builder $query
-     */
     public function scopeMonthly($query, $now)
     {
         return $query->where(\DB::raw("DATE_FORMAT(date,'%d')"), '=',
             \DB::raw("DATE_FORMAT('{$now}', '%d')"))
         ->where('type', '=', ReminderTypeEnum::MONTHLY);
+    }
+
+    private function setQueryType(&$sql, $type)
+    {
+        if (!is_null($type)) {
+            $sql->where('type', '=', $type);
+        }
+    }
+
+    private function getReminderQuery($status)
+    {
+        return $this->withTrashed()
+            ->where('status', '=', $status)
+            ->where(function ($builder)
+            {
+                return $builder->whereNull('deleted_at')
+                    ->orWhere(function ($builder)
+                    {
+                        return $builder->whereNotNull('deleted_at')
+                            ->where('date', '<', \DB::raw('DATE(deleted_at)'));
+
+                    });
+            });
+    }
+
+    private function setQueryDates(&$sql, $starts_at = null, $ends_at = null)
+    {
+        if (!is_null($starts_at)) {
+            $sql->where('date', '>=', $starts_at);
+        }
+
+        if (!is_null($ends_at)) {
+            $sql->where('date', '<=', $ends_at);
+        }
     }
 }

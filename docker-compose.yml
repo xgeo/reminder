@@ -1,123 +1,60 @@
-version: '3.8'
+version: '3'
 
-#Docker Networks
-networks:
-  laravel:
-    driver: bridge
-
-#Volumes
-volumes:
-  dbdata:
-    driver: local
-
-# Workflow
 services:
+
   nginx:
+    image: nginx:latest
+    build:
+      context: ./docker/
+      args:
+        - "BUILD_ARGUMENT_ENV=dev"
+      dockerfile: ./nginx/Dockerfile
+    container_name: ${COMPOSE_PROJECT_NAME}_nginx
+    restart: always
+    ports:
+      - 8090:80
+      - 443:443
+    volumes:
+      - .:/var/www/html:ro
+    depends_on:
+      - laravel
+    links:
+      - laravel
+
+  laravel: &laravel-template
+    image: laravel:latest
     build:
       context: .
-      dockerfile: ./compose/nginx/Dockerfile
-    container_name: nginx
-    ports:
-      - "8080:80"
-      # Port for xdebug (ensure this matches the remote_port in the xdebug.ini)
-      - "9001:9001"
+      args:
+        - "BUILD_ARGUMENT_ENV=dev"
+        - "BUILD_ARGUMENT_DEBUG_ENABLED=false"
+      dockerfile: ./Dockerfile
+    container_name: ${COMPOSE_PROJECT_NAME}_laravel
+    expose:
+      - 9000
     volumes:
-      - .:/var/www/html:delegated
-    depends_on:
-      - php
-      - mysql
-    networks:
-      - laravel
-
-  mysql:
-    image: mysql:5.7.29
-    container_name: mysql
-    restart: unless-stopped
-    tty: true
-    ports:
-      - "3307:3306"
-    environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_ROOT_PASSWORD: "@321@321"
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
-    volumes:
-      - ./compose/mysql/my.cnf:/etc/mysql/my.cnf
-      - dbdata:/var/lib/mysql/
-    networks:
-      - laravel
-
-  redis:
-    image: "redis:alpine"
-    container_name: redis
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
-    networks:
-      - laravel
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin
-    environment:
-      MYSQL_ROOT_PASSWORD: "@321@321"
-      PMA_HOST: mysql
-      PMA_PORT: 3306
-      PMA_ARBITRARY: 1
-    restart: always
+      - .:/var/www/html
     depends_on:
       - mysql
-    ports:
-    - "8081:80"
-    volumes:
-      - /sessions
-    networks:
-      - laravel
     links:
       - mysql
 
-  php:
-    build:
-      context: .
-      dockerfile: ./compose/php/Dockerfile
-    container_name: php
-    volumes:
-      - .:/var/www/html:delegated
-      # Enable xdebug
-      - ./compose/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+  ### Cron tasks
+  supervisord:
+    <<: *laravel-template
+    container_name: ${COMPOSE_PROJECT_NAME}_supervisord
+    expose: []
+    command: ["/usr/bin/supervisord"]
+
+  mysql:
+    image: mysql:8.0
+    container_name: ${COMPOSE_PROJECT_NAME}_mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=laravel
     ports:
-      - "9000:9000"
-    networks:
-      - laravel
-
-  composer:
-    build:
-      context: .
-      dockerfile: ./compose/php/composer/Dockerfile
-    container_name: composer
+      - 33061:3306
     volumes:
-      - .:/var/www/html
-    working_dir: /var/www/html
-    depends_on:
-      - php
-    user: laravel
-    networks:
-      - laravel
-    entrypoint: ['composer', '--ignore-platform-reqs']
-
-  artisan:
-    build:
-      context: .
-      dockerfile: ./compose/php/Dockerfile
-    container_name: artisan
-    volumes:
-      - .:/var/www/html:delegated
-    depends_on:
-      - mysql
-    working_dir: /var/www/html
-    user: laravel
-    entrypoint: ['php', '/var/www/html/artisan']
-    networks:
-      - laravel
+      - ./storage/mysql-data:/var/lib/mysql
+      - ./docker/dev/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
