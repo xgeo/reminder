@@ -28,6 +28,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
       libxml2-dev \
       libreadline-dev \
       supervisor \
+      redis-server \
       cron \
       libzip-dev \
     && docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd \
@@ -38,6 +39,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
       intl \
       opcache \
       zip \
+      redis \
     && rm -rf /tmp/* \
     && rm -rf /var/list/apt/* \
     && rm -rf /var/lib/apt/lists/* \
