@@ -9,14 +9,16 @@
 
 #### Installing and Running - With Docker
 
-- `make build-prod && make start-prod && make initialize`
-- `http://localhost:8090/documentation` - Swagger
+1. `make build-prod && make start-prod`
+2. `make initialize`
+3. `http://localhost:8090/documentation` - Swagger
 
 #### Installing - Without docker
 
 - `composer install`
 - `cp .env.example .env`
 - `php artisan key:generate`
+- `php artisan optimize`
 - `chmod -R 0777 storage bootstrap`
 - `php artisan migrate`
 - `php artisan passport:install`
@@ -27,14 +29,19 @@
 - Queue: `php artisan queue:listen redis --queue reminders`
 - Console Command: `php artisan check:reminders`
 - Server: `php artisan serve`
+- Valet: `valet link api.reminder`
 
 #### Cron
 
-- `* * * * * cd /postgrain && php artisan schedule:run >> /dev/null 2>&1`
+- `* * * * * cd /reminder && php artisan schedule:run >> /dev/null 2>&1`
 
 #### Scheduler locally
 
 - `php artisan schedule:work`
 
 #### Configuração para o Docker
-- git@github.com:dimadeush/docker-nginx-php-laravel.git
+- `git@github.com:dimadeush/docker-nginx-php-laravel.git`
+
+#### API User Test
+- email: `geovannylc@gmail.com`
+- password: `teste@321`

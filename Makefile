@@ -130,6 +130,7 @@ drop-migrate:
 	@make exec cmd="php artisan migrate:fresh --env=test"
 
 initialize:
+	@make exec cmd="php artisan optimize:clear"
 	@make exec cmd="cp ./.env.prod ./.env"
 	@make exec cmd="php artisan key:generate"
 	@make exec cmd="php artisan optimize"
