@@ -9,7 +9,7 @@
 
 #### Installing and Running - With Docker
 
-- `make build-prod && start-prod && initialize`
+- `make build-prod && make start-prod && make initialize`
 - `http://localhost:8090/documentation` - Swagger
 
 #### Installing - Without docker

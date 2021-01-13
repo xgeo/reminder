@@ -14,10 +14,12 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::create([
+        $data = [
             'full_name' => 'Teste - Geovanny Lino Coutinho',
             'password' => 'teste@321',
             'email' => 'geovannylc@gmail.com'
-        ]);
+        ];
+        User::create($data);
+        var_dump($data);
     }
 }
