@@ -138,6 +138,10 @@ initialize:
 	@make exec cmd="php artisan passport:install --force"
 	@make exec cmd="php artisan db:seed"
 	@make exec cmd="php artisan optimize"
+
+check-reminders:
+	@make exec cmd="php artisan check:reminders"
+
 migrate-no-test:
 	@make exec cmd="php artisan migrate --force"
 
