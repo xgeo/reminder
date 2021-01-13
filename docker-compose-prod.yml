@@ -1,18 +1,6 @@
 version: '3'
 
 services:
-    redis:
-      image: "redis:alpine"
-      container_name: redis
-      restart: unless-stopped
-      ports:
-        - "6379:6379"
-      depends_on:
-        - laravel
-      links:
-        - laravel
-        - supervisord
-
     nginx:
       image: nginx:latest
       build:
@@ -55,6 +43,12 @@ services:
       container_name: ${COMPOSE_PROJECT_NAME}_supervisord
       expose: []
       command: ["/usr/bin/supervisord"]
+
+    redis:
+      <<: *laravel-template
+      container_name: ${COMPOSE_PROJECT_NAME}_redis
+      expose: []
+      command: ["redis-server"]
 
     mysql:
       image: mysql:8.0

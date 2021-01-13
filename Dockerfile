@@ -39,11 +39,13 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
       intl \
       opcache \
       zip \
-      redis \
     && rm -rf /tmp/* \
     && rm -rf /var/list/apt/* \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
+
+RUN pecl install redis \
+    && docker-php-ext-enable redis
 
 # create document root
 RUN mkdir -p $APP_HOME/public
