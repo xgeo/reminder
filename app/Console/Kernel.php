@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
     {
          $schedule->command('check:reminders')
                      ->timezone('America/Recife')
-                     ->everyMinute();
+                     ->dailyAt('08:00');
     }
 
     /**
