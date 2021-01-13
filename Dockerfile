@@ -67,7 +67,7 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 RUN mkdir -p /var/log/supervisor
 RUN mkdir -p /etc/supervisor/supervisord.d/
 COPY --chown=root:root ./docker/general/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY --chown=root:root ./docker/general/supervisord.d/laravel-worker.conf /etc/supervisor/supervisord.d/
+COPY --chown=root:root ./docker/general/supervisord.d/laravel-worker.conf /etc/supervisor/supervisor
 
 COPY --chown=root:root ./docker/general/cron /var/spool/cron/crontabs/root
 RUN chmod 0600 /var/spool/cron/crontabs/root

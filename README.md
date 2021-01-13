@@ -7,14 +7,10 @@
 - Redis 5.x
 - Swagger - OA\Api 3.0
 
-#### Installing - With Docker
+#### Installing and Running - With Docker
 
-- `docker-compose up --build`
-- `docker-compose run --rm composer install`
-- `docker-compose run --rm artisan key:generate`
-- `docker-compose run --rm artisan migrate`
-- `docker-compose run --rm artisan passport:install`
-- `docker-compose run --rm artisan db:seed`
+- `make build-prod && start-prod && initialize`
+- `http://localhost:8090/documentation` - Swagger
 
 #### Installing - Without docker
 
@@ -39,3 +35,6 @@
 #### Scheduler locally
 
 - `php artisan schedule:work`
+
+#### Configuração para o Docker
+- git@github.com:dimadeush/docker-nginx-php-laravel.git
